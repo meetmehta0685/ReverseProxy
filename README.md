@@ -2,8 +2,6 @@
 
 A small, production-minded HTTP reverse proxy written in Go's standard library. It is intentionally narrow: one configured upstream, one binary, no external services, and explicit operational behavior.
 
-The project is also a learning artifact. The `lessons/`, `reference/`, and `learning-records/` directories explain how the implementation works from first principles.
-
 ## What it demonstrates
 
 - HTTP forwarding with `net/http/httputil.ReverseProxy`
@@ -106,7 +104,6 @@ Those omissions are part of the design discussion: the implementation keeps the 
 - `internal/proxy/rate_limiter.go` — process-local fixed-window limiter
 - `internal/proxy/metrics.go` — Prometheus text exposition
 - `internal/proxy/proxy_test.go` — forwarding, resilience, timeout, and configuration tests
-- `lessons/` and `reference/` — first-principles learning material
 
 ## Demo and portfolio publishing
 

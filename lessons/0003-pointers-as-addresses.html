@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 3 — Pointers as Addresses</title>
+  <link rel="stylesheet" href="../assets/course.css">
+  <script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Lesson 3 · Go basics · 8 minutes</div>
+    <h1>Pointers are<br>addresses</h1>
+    <p class="lede">The asterisk looks intimidating, but in this project it answers one simple question: “Do I have the value, or a way to find the value?”</p>
+  </header>
+
+  <section>
+    <h2>Two things can be named</h2>
+    <p>Imagine a mailbox. The <strong>value</strong> is the letter inside. The <strong>address</strong> tells you which mailbox to open.</p>
+    <pre>name := "Go"  // name holds the value itself
+
+ptr := &amp;name   // ptr holds name's address</pre>
+    <p>The <code>&amp;</code> operator means “give me the address of this variable.” A pointer is a value that holds an address.</p>
+  </section>
+
+  <section>
+    <h2>Reading through the address</h2>
+    <pre>name := "Go"
+ptr := &amp;name
+word := *ptr</pre>
+    <p>The <code>*</code> before <code>ptr</code> means “follow the address and read the value there.” After these lines, <code>word</code> contains <code>"Go"</code>. We call this <em>dereferencing</em>.</p>
+
+    <div class="quiz" data-correct="word receives the value stored in name." data-incorrect="The asterisk follows ptr's address to read the value there.">
+      <span class="label">Retrieval check</span>
+      <p>After <code>name := "Go"; ptr := &amp;name; word := *ptr</code>, what is in <code>word</code>?</p>
+      <div class="quiz-options">
+        <button data-answer="correct">The text value Go.</button>
+        <button data-answer="wrong">The address of name.</button>
+        <button data-answer="wrong">The pointer variable ptr.</button>
+      </div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Why flags return pointers</h2>
+    <p>Look at this line in <code>main.go</code>:</p>
+    <pre>listen := flag.String("listen", ":8080", "address to bind")</pre>
+    <p><code>flag.String</code> returns a pointer to the setting. After <code>flag.Parse()</code>, Go updates the value at that address if the user supplied <code>-listen</code>. The variable <code>listen</code> still points to the same place; the value there may have changed.</p>
+    <pre>server := http.Server{
+    Addr: *listen,
+}</pre>
+    <p>Here <code>*listen</code> means “read the string stored at the address.” The server wants the string itself, such as <code>":8080"</code>, rather than the address.</p>
+  </section>
+
+  <section>
+    <h2>Why methods sometimes use <code>*Proxy</code></h2>
+    <pre>func (p *Proxy) ServeHTTP(...) { ... }</pre>
+    <p>This says the method receives a pointer to a <code>Proxy</code>. It can work with the original proxy object rather than a copied proxy. That matters because the proxy contains shared counters, a limiter, and a circuit breaker. We’ll return to copying and shared state when we study concurrency.</p>
+  </section>
+
+  <section class="exercise">
+    <span class="label">Your turn · one sentence each</span>
+    <h2>Three checks</h2>
+    <ol>
+      <li>What does <code>&amp;name</code> produce?</li>
+      <li>What does <code>*ptr</code> do when reading an expression?</li>
+      <li>In <code>Addr: *listen</code>, does the server receive an address or the string value?</li>
+    </ol>
+    <p class="checkpoint">Answer plainly. You don’t need the word “dereference,” though it’s useful vocabulary.</p>
+  </section>
+
+  <section>
+    <h2>Primary source</h2>
+    <p>Use the official <a href="https://go.dev/tour/moretypes/1">Tour of Go: Pointers</a> for two tiny examples. Then look back at <code>*listen</code> in <code>main.go</code>.</p>
+    <p class="small">If the address metaphor stops helping, tell me. We can switch to a concrete memory diagram.</p>
+  </section>
+
+  <footer>
+    <a href="0002-values-variables-and-calls.html">Previous: Values, variables, and calls</a> · <a href="../reference/project-map.html">Project map</a>
+  </footer>
+</main>
+</body>
+</html>

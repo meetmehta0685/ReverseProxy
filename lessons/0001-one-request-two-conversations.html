@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 1 — How to Read This Go Project</title>
+  <link rel="stylesheet" href="../assets/course.css">
+  <script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Lesson 1 · No Go experience needed · 7 minutes</div>
+    <h1>How to read<br>this Go project</h1>
+    <p class="lede">Ignore the networking for a moment. Your first win is much smaller: recognize the basic shape of a Go program and know where this one starts.</p>
+  </header>
+
+  <section class="note warm">
+    <span class="label">First: the feeling is normal</span>
+    <p>New Go code is punctuation-heavy: <code>:=</code>, <code>*</code>, braces, parentheses, and names with dots. You do not need to decode all of it at once. In this lesson, only four words matter: <code>module</code>, <code>package</code>, <code>import</code>, and <code>func</code>.</p>
+  </section>
+
+  <section>
+    <h2>1. A module is the whole project</h2>
+    <p>Open <code>go.mod</code>. It contains only:</p>
+    <pre>module github.com/meetmehta0685/ReverseProxy
+
+go 1.23</pre>
+    <p>A <strong>module</strong> is the unit Go's tooling builds and versions. Here, the module covers this repository. Its name is also the prefix used when one package in the project imports another.</p>
+    <p>The second line says the code targets Go language version 1.23. It is not the application's version.</p>
+  </section>
+
+  <section>
+    <h2>2. Packages divide the module</h2>
+    <p>A <strong>package</strong> is a group of Go files in one directory that work together. Every <code>.go</code> file begins by naming its package.</p>
+    <pre>// cmd/proxy/main.go
+package main
+
+// internal/proxy/proxy.go
+package proxy</pre>
+    <p>This project has two important packages:</p>
+    <ul>
+      <li><code>main</code> in <code>cmd/proxy</code>: creates the runnable program.</li>
+      <li><code>proxy</code> in <code>internal/proxy</code>: contains the reusable proxy behavior.</li>
+    </ul>
+    <p>Think: <strong>module = project; package = one code neighborhood</strong>.</p>
+
+    <div class="quiz" data-correct="The module contains packages; the proxy package is one part of it." data-incorrect="Remember: module means project, package means code neighborhood.">
+      <span class="label">Retrieval check</span>
+      <p>Which is the larger unit in this repository?</p>
+      <div class="quiz-options">
+        <button data-answer="correct">The module is larger.</button>
+        <button data-answer="wrong">The package is larger.</button>
+        <button data-answer="wrong">Both are equally large.</button>
+      </div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Imports make another package available</h2>
+    <p>The top of <code>main.go</code> contains an import block:</p>
+    <pre>import (
+    "flag"
+    "net/http"
+
+    "github.com/meetmehta0685/ReverseProxy/internal/proxy"
+)</pre>
+    <p>The first two packages come with Go's standard library. The last one belongs to this module. After importing a package, code usually refers to it as <code>packageName.Thing</code>:</p>
+    <pre>flag.String(...)    // String from package flag
+http.Server{...}   // Server from package http
+proxy.New(...)     // New from this project's proxy package</pre>
+    <p>The dot here simply means “look inside that package.” We will delay the meanings of <code>...</code> and <code>{...}</code>.</p>
+  </section>
+
+  <section>
+    <h2>4. <code>func</code> declares a function</h2>
+    <p>A function is named work that can be run. Go declares one with <code>func</code>:</p>
+    <pre>func main() {
+    // work happens here
+}</pre>
+    <p>The pieces read left to right:</p>
+    <ul>
+      <li><code>func</code> — “a function begins here”</li>
+      <li><code>main</code> — the function's name</li>
+      <li><code>()</code> — its inputs; empty means none</li>
+      <li><code>{ }</code> — the function body</li>
+    </ul>
+    <p>In an executable <code>main</code> package, Go starts by running the specially named <code>main</code> function. That makes <code>cmd/proxy/main.go → func main</code> your starting point when exploring this application. The <a href="https://go.dev/doc/tutorial/getting-started">official getting-started tutorial</a> uses this same shape.</p>
+  </section>
+
+  <section>
+    <h2>See the program respond</h2>
+    <p>From the project directory, run:</p>
+    <pre>go run ./cmd/proxy -h</pre>
+    <p>Read this command as: “Go, compile and run the executable package in <code>cmd/proxy</code>, then ask that program for help.” The output lists the configuration flags. You do not need a backend because help exits before the server starts.</p>
+  </section>
+
+  <section class="exercise">
+    <span class="label">Your turn · answer from memory</span>
+    <h2>Three tiny checks</h2>
+    <ol>
+      <li>Which file tells Go the name of the whole module?</li>
+      <li>Which function is the executable's starting point?</li>
+      <li>In <code>proxy.New</code>, what does the dot mean?</li>
+    </ol>
+    <p class="checkpoint">Reply with three short answers. There is no trick. I’ll use them to decide whether the next lesson should reinforce these ideas or introduce variables and values.</p>
+  </section>
+
+  <section>
+    <h2>Primary source</h2>
+    <p>Read the official <a href="https://go.dev/doc/tutorial/getting-started#write-code">“Write some code” section</a> only—from the example through its five-part explanation. Stop before external modules. It should now look familiar rather than alien.</p>
+    <p class="small">Ask me about any symbol you notice. “What does this punctuation mean?” is exactly the right kind of question at this stage.</p>
+  </section>
+
+  <footer>
+    <a href="../reference/project-map.html">Optional project map</a> · <a href="0002-values-variables-and-calls.html">Next: values, variables, and function calls</a>
+  </footer>
+</main>
+</body>
+</html>

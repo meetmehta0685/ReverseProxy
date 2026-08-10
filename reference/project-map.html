@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reverse Proxy — Project Map</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Quick reference</div>
+    <h1>Project map</h1>
+    <p class="lede">The whole repository, compressed into one map. Use this to orient yourself before opening a file.</p>
+  </header>
+
+  <h2>Files and responsibilities</h2>
+  <dl>
+    <dt><code>cmd/proxy/main.go</code></dt>
+    <dd>Process boundary: flags, logger, proxy construction, HTTP server configuration, OS signals, graceful shutdown.</dd>
+    <dt><code>internal/proxy/proxy.go</code></dt>
+    <dd>Request boundary: configuration validation, routing, forwarding, middleware, deadlines, transport setup, and response tracking.</dd>
+    <dt><code>internal/proxy/circuit_breaker.go</code></dt>
+    <dd>Closed/open/half-open state, cooldown, single-probe recovery, and stale-request protection.</dd>
+    <dt><code>internal/proxy/rate_limiter.go</code></dt>
+    <dd>Process-local fixed-window request limiter and retry timing.</dd>
+    <dt><code>internal/proxy/metrics.go</code></dt>
+    <dd>Atomic counters and Prometheus text exposition.</dd>
+    <dt><code>internal/proxy/proxy_test.go</code></dt>
+    <dd>Behavioral evidence: forwarding, correlation IDs, local endpoints, rate limiting, circuit breaking, timeouts, and configuration validation using HTTP test utilities.</dd>
+    <dt><code>go.mod</code></dt>
+    <dd>Module identity and minimum Go language/toolchain version; there are no third-party dependencies.</dd>
+  </dl>
+
+  <h2>Request journey</h2>
+  <div class="flow" aria-label="Client to proxy to backend and back">
+    <span class="node">Client</span><span class="arrow">→</span><span class="node">Proxy</span><span class="arrow">→</span><span class="node">Backend</span>
+  </div>
+  <p>The proxy is a server to the client and a client to the backend. Every request enters correlation logging first; local paths <code>/healthz</code> and <code>/metrics</code> stop in route selection, while every other path enters the guards and forwarding.</p>
+
+  <h2>Concept index</h2>
+  <ol>
+    <li>HTTP messages, origins, intermediaries, methods, URLs, headers, status codes, and bodies</li>
+    <li>Go modules, packages, visibility, structs, methods, interfaces, pointers, errors, and deferred cleanup</li>
+    <li><code>http.Handler</code>, middleware composition, response writer wrapping, request contexts, and response-controller unwrapping</li>
+    <li>Reverse-proxy rewriting, transports, DNS/TCP/TLS, pooling, keep-alive, and HTTP/2</li>
+    <li>Deadlines, OS signals, goroutines, graceful shutdown, mutexes, atomics, and data races</li>
+    <li>Fixed-window rate limiting, closed/open/half-open circuit state, failure semantics, and overload behavior</li>
+    <li>Structured logs, request correlation, counters, health checks, and operational diagnosis</li>
+    <li>Unit/integration testing with <code>httptest</code>, race testing, coverage, vetting, benchmarks, and failure injection</li>
+    <li>Security boundaries, trusted headers, smuggling risks, SSRF considerations, TLS, and safe production hardening</li>
+    <li>Deployment, configuration, capacity, multi-instance limitations, extensions, and interview-ready tradeoff analysis</li>
+  </ol>
+
+  <h2>Glossary seed</h2>
+  <dl>
+    <dt>Client</dt><dd>The participant that sends a request.</dd>
+    <dt>Origin server</dt><dd>The authoritative server for a target resource.</dd>
+    <dt>Backend / upstream</dt><dd>This project's configured server that receives forwarded requests.</dd>
+    <dt>Reverse proxy / gateway</dt><dd>An intermediary that appears to be the origin to clients, then forwards requests to another server.</dd>
+    <dt>Handler</dt><dd>A Go value with <code>ServeHTTP(ResponseWriter, *Request)</code>.</dd>
+    <dt>Middleware</dt><dd>A handler wrapper that adds behavior before or after another handler.</dd>
+    <dt>Transport</dt><dd>The client-side machinery that obtains a connection, sends an HTTP request, and receives its response.</dd>
+  </dl>
+
+  <footer><a href="../lessons/0001-one-request-two-conversations.html">Lesson 1: How to read this Go project</a></footer>
+</main>
+</body>
+</html>

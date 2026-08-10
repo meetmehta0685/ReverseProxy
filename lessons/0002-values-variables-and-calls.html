@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 2 — Values, Variables, and Calls</title>
+  <link rel="stylesheet" href="../assets/course.css">
+  <script src="../assets/quiz.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Lesson 2 · Go basics · 8 minutes</div>
+    <h1>Values, variables,<br>and calls</h1>
+    <p class="lede">A function call is an action. A variable is a name you keep so you can use a result later. This is the small engine driving <code>main.go</code>.</p>
+  </header>
+
+  <section>
+    <h2>A value is data</h2>
+    <p>These are values:</p>
+    <pre>"8080"       // text
+15*time.Second // a duration value
+true           // a boolean value</pre>
+    <p>Values are the things a program can pass around, store, compare, or give to a function. Their exact types matter, but we’ll learn types gradually.</p>
+  </section>
+
+  <section>
+    <h2>A variable gives a value a name</h2>
+    <pre>message := "hello"
+message = "goodbye"</pre>
+    <p><code>:=</code> means “create a new variable and put this value in it.” The later <code>=</code> means “replace the value in an existing variable.”</p>
+    <p>Read the two lines as: create <code>message</code> with <code>"hello"</code>, then replace its value with <code>"goodbye"</code>.</p>
+
+    <div class="quiz" data-correct="The second line replaces an existing value." data-incorrect="The colon-equals form creates; the equals form replaces.">
+      <span class="label">Retrieval check</span>
+      <p>What does the second line do?</p>
+      <div class="quiz-options">
+        <button data-answer="correct">It replaces the value.</button>
+        <button data-answer="wrong">It creates another variable.</button>
+        <button data-answer="wrong">It deletes the variable.</button>
+      </div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>A function call performs work</h2>
+    <pre>flag.Parse()</pre>
+    <p>This calls the <code>Parse</code> function belonging to the <code>flag</code> package. The parentheses mean “run it now.” Empty parentheses mean this call supplies no arguments.</p>
+    <p>With arguments, the values go inside the parentheses:</p>
+    <pre>flag.String("listen", ":8080", "address to bind")</pre>
+    <p>Read this as “call <code>String</code> from <code>flag</code>, giving it three values.” The function returns a result, and <code>:=</code> gives that result a name:</p>
+    <pre>listen := flag.String("listen", ":8080", "address to bind")</pre>
+    <p>We’ll explain the result’s pointer shape later. For now, recognize the pattern: <strong>call a function → save what it returns</strong>.</p>
+  </section>
+
+  <section>
+    <h2>Find the pattern in this project</h2>
+    <p>At the start of <code>main</code>, the project creates four named values from command-line flag functions:</p>
+    <pre>listen := flag.String(...)
+backend := flag.String(...)
+rateLimit := flag.Int(...)
+upstreamTimeout := flag.Duration(...)</pre>
+    <p>Then it calls:</p>
+    <pre>flag.Parse()</pre>
+    <p>Only after parsing does the program construct the proxy using the chosen configuration. The order matters: first define the available settings, then read the user’s settings, then build the service.</p>
+  </section>
+
+  <section class="exercise">
+    <span class="label">Your turn · retrieve the pattern</span>
+    <h2>Three short answers</h2>
+    <ol>
+      <li>What does <code>:=</code> do?</li>
+      <li>What do the parentheses in <code>flag.Parse()</code> tell Go?</li>
+      <li>Which happens first in <code>main.go</code>: defining flags or parsing flags?</li>
+    </ol>
+    <p class="checkpoint">Answer in your own words. Next we’ll unpack the mysterious <code>*listen</code> notation only after these three pieces feel solid.</p>
+  </section>
+
+  <section>
+    <h2>Primary source</h2>
+    <p>Use the <a href="https://go.dev/tour/basics/7">Tour of Go: Short variable declarations</a> and <a href="https://go.dev/tour/basics/6">Calling functions</a>. Treat them as tiny experiments, not a chapter to memorize.</p>
+    <p class="small">Ask about any symbol that feels unexplained. We’re deliberately keeping the vocabulary narrow.</p>
+  </section>
+
+  <footer>
+    <a href="0001-one-request-two-conversations.html">Previous: How to read this Go project</a> · <a href="0003-pointers-as-addresses.html">Next: Pointers as addresses</a>
+  </footer>
+</main>
+</body>
+</html>
